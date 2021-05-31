@@ -1,4 +1,3 @@
-import { SectionCreator } from '../core/creator';
 import {
   Bar,
   Beat,
@@ -7,7 +6,14 @@ import {
   Position,
   Scale,
   ScaleIndex,
-} from '../core/melody';
+} from './melody';
+
+// 同じビートでセクションを作り出す
+export interface SectionCreator {
+  beats: Beat[];
+  structure: MelodyStructure;
+  create(startPosition: Position, count: number): Bar[];
+}
 
 export class AccompanimentSectionCreator implements SectionCreator {
   constructor(public beats: Beat[], public structure: MelodyStructure) {}
