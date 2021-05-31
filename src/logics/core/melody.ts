@@ -25,11 +25,11 @@ export interface Chord {
 export class Sound {
   constructor(public readonly pitch: number, public readonly degree: Degree) {}
 
-  static fromDegree(degree: Degree): Sound {
-    const deg = Math.abs(degree % 12) as Degree;
+  static fromNumber(num: number): Sound {
+    const deg = Math.abs(num % 12) as Degree;
     assert(deg >= 0 && deg < 12);
 
-    return new Sound(Math.floor(degree / 12), deg);
+    return new Sound(Math.floor(num / 12), deg);
   }
 
   add(other: Degree): Sound {
