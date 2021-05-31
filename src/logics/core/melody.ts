@@ -9,8 +9,7 @@ export interface MelodyStructure {
     bpms: PositionalOption<number>[];
     chordProgression: Chord[];
     timeSignetures: PositionalOption<[number, number]>[];
-    scales: PositionalOption<Degree[]>[];
-    keys: PositionalOption<Sound>[];
+    scales: PositionalOption<Scale>[];
 }
 
 interface PositionalOption<T> {
@@ -19,8 +18,8 @@ interface PositionalOption<T> {
 }
 
 export interface Chord {
-    root: Degree;
-    (): Degree[];
+    root: ScaleIndex;
+    indices(): ScaleIndex[];
 }
 
 export class Sound {
@@ -65,6 +64,8 @@ export interface Note {
     beat: Beat;
 }
 
+export type Scale = [Sound, Sound, Sound, Sound, Sound, Sound, Sound]
+export type ScaleIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type Degree = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
 export type Position = number;
 export type Beat = 0.25 | 0.5 | 1 | 2 | 4;
