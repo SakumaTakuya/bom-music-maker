@@ -1,4 +1,5 @@
 import { assert } from 'console';
+import { clip } from '../../utils/math';
 
 export interface Melody {
   structure: MelodyStructure;
@@ -20,28 +21,33 @@ export interface PositionalOption<T> {
 export type Chord = Sound[];
 
 export class Sound {
-  constructor(public readonly pitch: number, public readonly degree: Degree) {}
+  constructor(public readonly octave: Octave, public readonly pitch: Degree) {}
 
   static fromNumber(num: number): Sound {
-    const deg = Math.abs(num % 12) as Degree;
-    assert(deg >= 0 && deg < 12);
+    const pitch = Math.abs(num % 12) as Degree;
+    assert(pitch >= 0 && pitch < 12);
 
-    return new Sound(Math.floor(num / 12), deg);
+    const octave = clip(Math.floor(num / 12), -4, 11) as Octave;
+
+    return new Sound(octave, pitch);
   }
 
-  add(other: Degree, canChangePitch: boolean = true): Sound {
-    const added = this.degree + other;
-    const deg = Math.abs(added % 12) as Degree;
-    const pitch = canChangePitch
-      ? this.pitch + Math.floor(added / 12)
-      : this.pitch;
-    assert(deg >= 0 && deg < 12);
+  add(degree: Degree, canChangePitch: boolean = true): Sound {
+    const added = this.pitch + degree;
+    const pitch = Math.abs(added % 12) as Degree;
+    const octave = clip(
+      canChangePitch ? this.octave + Math.floor(added / 12) : this.octave,
+      -4,
+      11
+    ) as Octave;
+    assert(pitch >= 0 && pitch < 12);
 
-    return new Sound(pitch, deg);
+    return new Sound(octave, pitch);
   }
 }
 
 export interface Part {
+  synth: Synth;
   bars: Bar[];
   position: Position;
 }
@@ -55,6 +61,23 @@ export interface Note {
   beat: Beat;
 }
 
+export type Octave =
+  | -4
+  | -3
+  | -2
+  | -1
+  | 0
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 11;
 export type Scale = [Degree, Degree, Degree, Degree, Degree, Degree, Degree];
 export type ScaleIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type Degree = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
@@ -73,3 +96,11 @@ Array.prototype.current = function <U>(position: Position) {
     .filter((value) => value.position <= position)
     .sort((a, b) => b.position - a.position)[0];
 };
+
+export interface Player {
+  melody: Melody;
+  load(): Promise<void>;
+  play(): Promise<void>;
+}
+
+export type Synth = 'synth' | 'am';
