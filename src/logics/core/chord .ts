@@ -36,7 +36,7 @@ interface ScaleIndexElement {
   nexts: ScaleIndex[];
 }
 
-const scaleIndexMap: ScaleIndexElement[] = [
+export const scaleIndexMap: ScaleIndexElement[] = [
   { index: 0, nexts: [0, 1, 2, 3, 4, 5] },
   { index: 1, nexts: [4] },
   { index: 2, nexts: [0, 1, 2, 3, 4, 5] },
@@ -46,7 +46,7 @@ const scaleIndexMap: ScaleIndexElement[] = [
   { index: 6, nexts: [0] },
 ];
 
-const scaleIndexReverseMap: ScaleIndex[][] = [
+export const scaleIndexReverseMap: ScaleIndex[][] = [
   [0, 2, 3, 4, 5],
   [0, 2, 3, 5],
   [0, 2, 3, 5],
