@@ -12,15 +12,12 @@ export interface MelodyStructure {
   scales: PositionalOption<Scale>[];
 }
 
-interface PositionalOption<T> {
+export interface PositionalOption<T> {
   value: T;
   position: Position;
 }
 
-export interface Chord {
-  root: ScaleIndex;
-  indices(): ScaleIndex[];
-}
+export type Chord = Sound[];
 
 export class Sound {
   constructor(public readonly pitch: number, public readonly degree: Degree) {}
@@ -32,12 +29,15 @@ export class Sound {
     return new Sound(Math.floor(num / 12), deg);
   }
 
-  add(other: Degree): Sound {
+  add(other: Degree, canChangePitch: boolean = true): Sound {
     const added = this.degree + other;
     const deg = Math.abs(added % 12) as Degree;
+    const pitch = canChangePitch
+      ? this.pitch + Math.floor(added / 12)
+      : this.pitch;
     assert(deg >= 0 && deg < 12);
 
-    return new Sound(this.pitch + Math.floor(added / 12), deg);
+    return new Sound(pitch, deg);
   }
 }
 
@@ -55,7 +55,7 @@ export interface Note {
   beat: Beat;
 }
 
-export type Scale = [Sound, Sound, Sound, Sound, Sound, Sound, Sound];
+export type Scale = [Degree, Degree, Degree, Degree, Degree, Degree, Degree];
 export type ScaleIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type Degree = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
 export type Position = number;

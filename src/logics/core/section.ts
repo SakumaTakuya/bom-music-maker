@@ -1,12 +1,4 @@
-import {
-  Bar,
-  Beat,
-  MelodyStructure,
-  Note,
-  Position,
-  Scale,
-  ScaleIndex,
-} from './melody';
+import { Bar, Beat, MelodyStructure, Note, Position, Chord } from './melody';
 
 // 同じビートでセクションを作り出す
 export interface SectionCreator {
@@ -18,8 +10,8 @@ export interface SectionCreator {
 export class AccompanimentSectionCreator implements SectionCreator {
   constructor(public beats: Beat[], public structure: MelodyStructure) {}
 
-  createBar(chord: ScaleIndex[], scale: Scale): Bar {
-    return buildChordBar(chord, scale, this.beats, 0);
+  createBar(chord: Chord): Bar {
+    return buildChordBar(chord, this.beats, 0);
   }
 
   create(startPosition: Position, count: number): Bar[] {
@@ -27,10 +19,9 @@ export class AccompanimentSectionCreator implements SectionCreator {
 
     const barPosition = startPosition + count;
     for (let i = startPosition; i < barPosition; i++) {
-      const chord = this.structure.chordProgression[i].indices();
-      const scale = this.structure.scales.current(i).value;
+      const chord = this.structure.chordProgression[i];
 
-      bars.push(this.createBar(chord, scale));
+      bars.push(this.createBar(chord));
     }
 
     return bars;
@@ -38,8 +29,7 @@ export class AccompanimentSectionCreator implements SectionCreator {
 }
 
 function buildChordBar(
-  chord: ScaleIndex[],
-  scale: Scale,
+  chord: Chord,
   beats: Beat[],
   restProbability: number = 0.1
 ): Bar {
@@ -52,7 +42,7 @@ function buildChordBar(
     }
 
     return {
-      sounds: chord.map((v) => scale[v]),
+      sounds: chord,
       beat: beat,
     };
   });
