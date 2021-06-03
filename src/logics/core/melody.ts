@@ -7,9 +7,9 @@ export interface Melody {
 }
 
 export interface MelodyStructure {
-  bpms: PositionalOption<number>[];
+  bpm: number;
   chordProgression: Chord[];
-  timeSignetures: PositionalOption<[number, number]>[];
+  timeSigneture: [number, number];
   scales: PositionalOption<Scale>[];
 }
 
