@@ -44,6 +44,8 @@ export class TonePlayer implements Player {
 
   async load(): Promise<void> {
     this.melodyLines = [];
+    Tone.Transport.bpm.value = this.melody.structure.bpm;
+    Tone.Transport.timeSignature = this.melody.structure.timeSigneture;
 
     for (const part of this.melody.parts) {
       const synth = synthMap[part.synth]();
