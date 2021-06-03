@@ -1,15 +1,12 @@
 import { Bar, Beat, MelodyStructure, Note, Position, Chord } from './melody';
 
 // 同じビートでセクションを作り出す
-export interface SectionCreator {
-  beats: Beat[];
-  structure: MelodyStructure;
-  create(startPosition: Position, count: number): Bar[];
+export abstract class SectionCreator {
+  constructor(public beats: Beat[], public structure: MelodyStructure) {}
+  abstract create(startPosition: Position, count: number): Bar[];
 }
 
-export class AccompanimentSectionCreator implements SectionCreator {
-  constructor(public beats: Beat[], public structure: MelodyStructure) {}
-
+export class AccompanimentSectionCreator extends SectionCreator {
   createBar(chord: Chord): Bar {
     return buildChordBar(chord, this.beats, 0);
   }
