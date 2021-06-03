@@ -10,8 +10,14 @@ export const scaleMap: { [index in Feeling]: Scale } = {
 };
 
 export type Heat = 'calm' | 'agitato';
+export type Heats = PositionalOption<Heat>[];
 
-export const BeatLeaderBoardMap: { [index in Heat]: Beat[] } = {
+export const accompanimentBeatLeaderBoardMap: { [index in Heat]: Beat[] } = {
+  calm: [4, 2, 2, 1],
+  agitato: [2, 2, 1, 1, 0.5, 0.5, 0.25],
+};
+
+export const melodyBeatLeaderBoardMap: { [index in Heat]: Beat[] } = {
   calm: [4, 2, 2, 1, 1, 1, 1],
   agitato: [2, 2, 1, 1, 1, 1, 0.5, 0.5, 0.25, 0.25],
 };
