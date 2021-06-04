@@ -1,4 +1,3 @@
-import { assert } from 'console';
 import { clip } from '../../utils/math';
 
 export interface Melody {
@@ -25,7 +24,6 @@ export class Sound {
 
   static fromNumber(num: number): Sound {
     const pitch = Math.abs(num % 12) as Degree;
-    assert(pitch >= 0 && pitch < 12);
 
     const octave = clip(Math.floor(num / 12), -4, 11) as Octave;
 
@@ -40,7 +38,6 @@ export class Sound {
       -4,
       11
     ) as Octave;
-    assert(pitch >= 0 && pitch < 12);
 
     return new Sound(octave, pitch);
   }
