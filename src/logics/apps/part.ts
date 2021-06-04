@@ -21,15 +21,15 @@ export function createSection(
 
     const sectionCreator = new creatorClass(beats, melodyStructure);
 
-    startPosition += halfUnit;
-
     if (leaderBoards.current(startPosition).value != leaderBoard) {
       result.push(...sectionCreator.create(startPosition, halfUnit));
+      startPosition += halfUnit;
     } else {
       result.push(
         ...sectionCreator.create(startPosition, halfUnit),
-        ...sectionCreator.create(startPosition, halfUnit)
+        ...sectionCreator.create(startPosition + halfUnit, halfUnit)
       );
+      startPosition += createUnit;
     }
   }
 
