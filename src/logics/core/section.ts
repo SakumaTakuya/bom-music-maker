@@ -39,7 +39,7 @@ function buildChordBar(
     }
 
     return {
-      sounds: chord,
+      sounds: chord ?? [],
       beat: beat,
     };
   });
