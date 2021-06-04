@@ -40,6 +40,7 @@ function soundToToneNote(sound: Sound): string {
 
 export class TonePlayer implements Player {
   melodyLines?: TonePart[];
+  synths: Tone.PolySynth[] = [];
   constructor(public melody: Melody) {}
 
   async load(): Promise<void> {
@@ -83,10 +84,25 @@ export class TonePlayer implements Player {
   async play(): Promise<void> {
     this.melodyLines = this.melodyLines || [];
 
+    this.clean();
+
     for (const melodyLine of this.melodyLines) {
+      const synth = melodyLine.synth.toDestination();
+
       new Tone.Part((time, value) => {
-        melodyLine.synth.triggerAttackRelease(value.note, value.duration, time);
+        synth.triggerAttackRelease(value.note, value.duration);
       }, melodyLine.melody).start();
+
+      this.synths.push(synth);
     }
+
+    Tone.Transport.start();
+  }
+
+  clean(): void {
+    for (const synth of this.synths) {
+      synth.dispose();
+    }
+    this.synths = [];
   }
 }
