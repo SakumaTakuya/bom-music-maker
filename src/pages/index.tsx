@@ -9,14 +9,31 @@ import { AccompanimentSectionCreator } from '../logics/core/section';
 const IndexPage = () => {
   async function createMusic() {
      const structure = createMusicStructure(
-      140,
+      200,
       [4, 4],
-      100,
+      20,
       new Sound(4, 0),
       [{
        value: "chreeful",
-       position: 0 
-      }],
+       position: 0
+      },
+      {
+        value: "dismal",
+        position: 4
+      },
+      {
+        value: "chreeful",
+        position: 8
+       },
+       {
+        value: "dismal",
+        position: 12
+       },
+       {
+        value: "chreeful",
+        position: 16
+       },
+    ],
     );
 
     const section = createSection(
