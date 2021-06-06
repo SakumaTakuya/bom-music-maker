@@ -1,9 +1,11 @@
 import { select } from '../../utils/array';
 import { Beat } from './melody';
 
+export type LeaderBoard = Beat[];
+
 export function selectBeats(
   timeSigneture: [number, number],
-  leaderBoard: Beat[]
+  leaderBoard: LeaderBoard
 ): Beat[] {
   const results: Beat[] = [];
   const [pulses, measured] = timeSigneture;

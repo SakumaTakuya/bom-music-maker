@@ -1,4 +1,4 @@
-import { selectBeats } from '../core/beat';
+import { LeaderBoard, selectBeats } from '../core/beat';
 import { Bar, Beat, MelodyStructure, PositionalOption } from '../core/melody';
 import { SectionCreator } from '../core/section';
 
@@ -9,7 +9,7 @@ export function createSection(
   ) => SectionCreator,
   startPosition: number,
   count: number,
-  leaderBoards: PositionalOption<Beat[]>[],
+  leaderBoards: PositionalOption<LeaderBoard>[],
   melodyStructure: MelodyStructure
 ): Bar[] {
   const createUnit = 8;
