@@ -41,7 +41,7 @@ const IndexPage = () => {
       0,
       structure.chordProgression.length,
       heatsToBeatsBoard([{
-        value: "agitato",
+        value: 1,
         position: 0
       }]),
       structure
