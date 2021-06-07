@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import Layout from '../components/Layout';
-import { heatsToBeatsBoard } from '../logics/apps/beat';
-import { Feeling, Feelings } from '../logics/apps/feeling';
+import { usePositionalValues } from '../hooks/usePositionalValue';
+import { Heat, heatsToBeatsBoard } from '../logics/apps/beat';
+import { Feeling } from '../logics/apps/feeling';
 import { createMusicStructure } from '../logics/apps/music';
 import { createSection } from '../logics/apps/part';
 import { TonePlayer } from '../logics/backend/tone';
-import { Melody, Part, PositionalOption, Sound } from '../logics/core/melody';
+import { Melody, Part, Sound } from '../logics/core/melody';
 import { AccompanimentSectionCreator } from '../logics/core/section';
 
 const IndexPage = () => {
@@ -13,34 +14,20 @@ const IndexPage = () => {
   const [pulses, setPulses] = useState(4);
   const [measured, setMeasured] = useState(4);
   const [timeSecond, setTimeSecond] = useState(40);
-  const [feelings, setFeelings] = useState<Feelings>([
+  const [feelings, newFeelings, editFeelings, deleteFeelings] =
+    usePositionalValues<Feeling>([
+      {
+        value: 'chreeful',
+        position: 0,
+      },
+    ]);
+
+  const [heats, newHeats, editHeats, deleteHeats] = usePositionalValues<Heat>([
     {
-      value: 'chreeful',
+      value: 0,
       position: 0,
     },
   ]);
-
-  const newFeelings = () => {
-    const last = feelings[feelings.length - 1];
-    setFeelings([
-      ...feelings,
-      {
-        value: last.value,
-        position: last.position + 1,
-      },
-    ]);
-  };
-
-  const editFeelings = (id: number, feeling: PositionalOption<Feeling>) => {
-    const copied = [...feelings];
-    copied[id] = feeling;
-    setFeelings([...copied]);
-    console.log(feelings);
-  };
-
-  const deleteFeelings = (id: number) => {
-    setFeelings(feelings.filter((_, i) => i !== id));
-  };
 
   async function createMusic() {
     const structure = createMusicStructure(
@@ -55,12 +42,7 @@ const IndexPage = () => {
       AccompanimentSectionCreator,
       0,
       structure.chordProgression.length,
-      heatsToBeatsBoard([
-        {
-          value: 1,
-          position: 0,
-        },
-      ]),
+      heatsToBeatsBoard(heats),
       structure
     );
 
@@ -94,13 +76,13 @@ const IndexPage = () => {
         </p>
         <h2>Time Signature:</h2>
         <p>
-          pulses
+          pulses:
           <input
             type="number"
             value={pulses}
             onChange={(e) => setPulses(Number(e.target.value))}
           ></input>
-          measured
+          measured:
           <input
             type="number"
             value={measured}
@@ -116,11 +98,11 @@ const IndexPage = () => {
           ></input>
         </p>
         <h2>Feelings:</h2>
-
         <button onClick={newFeelings}>Join</button>
         <ul>
           {feelings.map((feeling, index) => (
             <li key={index}>
+              position:
               {index == 0 && 0}
               {index != 0 && (
                 <input
@@ -134,6 +116,7 @@ const IndexPage = () => {
                   }
                 ></input>
               )}
+              value:
               <select
                 value={feeling.value}
                 onChange={(e) =>
@@ -153,6 +136,44 @@ const IndexPage = () => {
           ))}
         </ul>
 
+        <h2>Heats:</h2>
+        <button onClick={newHeats}>Join</button>
+        <ul>
+          {heats.map((heat, index) => (
+            <li key={index}>
+              position:
+              {index == 0 && 0}
+              {index != 0 && (
+                <input
+                  type="number"
+                  value={heat.position}
+                  onChange={(e) =>
+                    editHeats(index, {
+                      ...heat,
+                      position: Number(e.target.value),
+                    })
+                  }
+                ></input>
+              )}
+              value:
+              <input
+                type="number"
+                value={heat.value}
+                onChange={(e) =>
+                  editHeats(index, {
+                    ...heat,
+                    value: Number(e.target.value),
+                  })
+                }
+              ></input>
+              {index != 0 && (
+                <button onClick={() => deleteHeats(index)}>delete</button>
+              )}
+            </li>
+          ))}
+        </ul>
+
+        <hr></hr>
         <button onClick={createMusic}>create</button>
       </Layout>
     </>
