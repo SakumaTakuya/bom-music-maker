@@ -33,7 +33,7 @@ export function createMusicStructure(
   };
 }
 
-function calculateBarCount(
+export function calculateBarCount(
   bpm: number,
   timeSignetures: [number, number],
   timeSecounds: number

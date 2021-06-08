@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import { usePositionalValues } from '../hooks/usePositionalValue';
 import { Heat, heatsToBeatsBoard } from '../logics/apps/beat';
 import { Feeling } from '../logics/apps/feeling';
-import { createMusicStructure } from '../logics/apps/music';
+import { calculateBarCount, createMusicStructure } from '../logics/apps/music';
 import { createSection } from '../logics/apps/part';
 import { TonePlayer } from '../logics/backend/tone';
 import { Melody, Part, Sound } from '../logics/core/melody';
@@ -14,6 +14,7 @@ const IndexPage = () => {
   const [pulses, setPulses] = useState(4);
   const [measured, setMeasured] = useState(4);
   const [timeSecond, setTimeSecond] = useState(40);
+  const [barCount, setBarCount] = useState(0);
   const [feelings, newFeelings, editFeelings, deleteFeelings] =
     usePositionalValues<Feeling>([
       {
@@ -21,7 +22,6 @@ const IndexPage = () => {
         position: 0,
       },
     ]);
-
   const [heats, newHeats, editHeats, deleteHeats] = usePositionalValues<Heat>([
     {
       value: 0,
@@ -29,12 +29,17 @@ const IndexPage = () => {
     },
   ]);
 
+  useEffect(() => {
+    const count = calculateBarCount(bpm, [pulses, measured], timeSecond);
+    setBarCount(Math.floor(count));
+  }, [bpm, pulses, measured, timeSecond]);
+
   async function createMusic() {
     const structure = createMusicStructure(
       bpm,
       [pulses, measured],
       timeSecond,
-      new Sound(4, 0),
+      new Sound(4, 7),
       feelings
     );
 
@@ -65,7 +70,6 @@ const IndexPage = () => {
   return (
     <>
       <Layout title="Music Maker">
-        <h1>Bom Music Maker</h1>
         <h2>BPM:</h2>
         <p>
           <input
@@ -76,26 +80,26 @@ const IndexPage = () => {
         </p>
         <h2>Time Signature:</h2>
         <p>
-          pulses:
           <input
             type="number"
             value={pulses}
             onChange={(e) => setPulses(Number(e.target.value))}
           ></input>
-          measured:
+          /
           <input
             type="number"
             value={measured}
             onChange={(e) => setMeasured(Number(e.target.value))}
           ></input>
         </p>
-        <h2>Time Seconds</h2>
+        <h2>Time Seconds:</h2>
         <p>
           <input
             type="number"
             value={timeSecond}
             onChange={(e) => setTimeSecond(Number(e.target.value))}
           ></input>
+          s (Bar Count {barCount})
         </p>
         <h2>Feelings:</h2>
         <button onClick={newFeelings}>Join</button>
