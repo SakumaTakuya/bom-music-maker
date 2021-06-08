@@ -19,5 +19,5 @@ export function heatsToBeatsBoard(
 }
 
 export function heatToBeat(heat: Heat): Beat {
-  return Math.pow(2, clip(Math.round(randomNormal(heat)), -2, 2)) as Beat;
+  return Math.pow(2, clip(Math.round(randomNormal(-heat)), -2, 2)) as Beat;
 }
