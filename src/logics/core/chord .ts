@@ -9,25 +9,29 @@ import {
 } from './melody';
 import { select } from '../../utils/array';
 
-export type ChordFunction = (key: Sound, scale: Scale) => Chord;
+export type ChordFunction = (sound: Sound, key: Sound, scale: Scale) => Chord;
 
-export function diatonicChord(key: Sound, scale: Scale): Chord {
-  return [0, 2, 4].map((id) => key.add(scale[id] as Degree, false));
+export function diatonicChord(sound: Sound, key: Sound, scale: Scale): Chord {
+  return [0, 2, 4].map((id) => sound.add(scale[id] as Degree).closed(key));
 }
 
-export function diatonicSeventhChord(key: Sound, scale: Scale): Chord {
-  return [0, 2, 4, 6].map((id) => key.add(scale[id] as Degree, false));
+export function diatonicSeventhChord(
+  sound: Sound,
+  key: Sound,
+  scale: Scale
+): Chord {
+  return [0, 2, 4, 6].map((id) => sound.add(scale[id] as Degree).closed(key));
 }
 
-export function sus2Chord(key: Sound, scale: Scale): Chord {
-  const result = [0, 4].map((id) => key.add(scale[id] as Degree, false));
-  result.push(key.add(2, false));
+export function sus2Chord(sound: Sound, key: Sound, scale: Scale): Chord {
+  const result = [0, 4].map((id) => sound.add(scale[id] as Degree).closed(key));
+  result.push(sound.add(2).closed(key));
   return result;
 }
 
-export function sus4Chord(key: Sound, scale: Scale): Chord {
-  const result = [0, 4].map((id) => key.add(scale[id] as Degree, false));
-  result.push(key.add(4, false));
+export function sus4Chord(sound: Sound, key: Sound, scale: Scale): Chord {
+  const result = [0, 4].map((id) => sound.add(scale[id] as Degree).closed(key));
+  result.push(sound.add(4, false).closed(key));
   return result;
 }
 
@@ -82,7 +86,7 @@ export function createChordProgression(
 
     currentRoot = scaleIndexMap[current];
 
-    chords.push(chordFunc(key.add(scale[currentRoot.index]), scale));
+    chords.push(chordFunc(key.add(scale[currentRoot.index]), key, scale));
     roots.push(currentRoot.index);
   }
 
@@ -106,7 +110,7 @@ export function createChordProgression(
     // 目標値に到達できないので到達できるScaleIndexに置き換える
     const altered = select(...scaleIndexReverseMap[destination]);
     roots[i] = altered;
-    chords[i] = chordFunc(key.add(scale[currentRoot.index]), scale);
+    chords[i] = chordFunc(key.add(scale[currentRoot.index]), key, scale);
     destination = altered;
   }
 

@@ -25,21 +25,36 @@ export class Sound {
   static fromNumber(num: number): Sound {
     const pitch = Math.abs(num % 12) as Degree;
 
-    const octave = clip(Math.floor(num / 12), -4, 11) as Octave;
+    const octave = clip(Math.floor(num / 12), 0, 11) as Octave;
 
     return new Sound(octave, pitch);
   }
 
+  toNumber(): number {
+    return this.octave * 12 + this.pitch;
+  }
+
   add(degree: Degree, canChangePitch: boolean = true): Sound {
-    const added = this.pitch + degree;
+    const added = this.toNumber() + degree;
     const pitch = Math.abs(added % 12) as Degree;
     const octave = clip(
-      canChangePitch ? this.octave + Math.floor(added / 12) : this.octave,
-      -4,
+      canChangePitch ? Math.floor(added / 12) : this.octave,
+      0,
       11
     ) as Octave;
 
     return new Sound(octave, pitch);
+  }
+
+  closed(key: Sound): Sound {
+    const diff = key.toNumber() - this.toNumber();
+    const absDiff = Math.abs(diff);
+    return new Sound(
+      absDiff < 12
+        ? this.octave
+        : (clip(this.octave + diff / absDiff, 0, 11) as Octave),
+      this.pitch
+    );
   }
 }
 
@@ -58,23 +73,7 @@ export interface Note {
   beat: Beat;
 }
 
-export type Octave =
-  | -4
-  | -3
-  | -2
-  | -1
-  | 0
-  | 1
-  | 2
-  | 3
-  | 4
-  | 5
-  | 6
-  | 7
-  | 8
-  | 9
-  | 10
-  | 11;
+export type Octave = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
 export type Scale = [Degree, Degree, Degree, Degree, Degree, Degree, Degree];
 export type ScaleIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type Degree = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
