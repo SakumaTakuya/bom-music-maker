@@ -1,7 +1,12 @@
-import React from 'react'
-import Head from 'next/head'
+import React from 'react';
+import Head from 'next/head';
 import clsx from 'clsx';
-import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles';
+import {
+  makeStyles,
+  useTheme,
+  Theme,
+  createStyles,
+} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
@@ -19,7 +24,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
 
 const drawerWidth = 240;
-const appTitle = "sample-app";
+const appTitle = 'bom-music-maker';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -77,7 +82,7 @@ const useStyles = makeStyles((theme: Theme) =>
       }),
       marginLeft: 0,
     },
-  }),
+  })
 );
 
 function ListItemLink(props: ListItemProps<'a', { button?: true }>) {
@@ -89,10 +94,7 @@ export interface LayoutProps {
   title: string;
 }
 
-const Layout: React.FC<LayoutProps> = ({
-  children,
-  title,
-}) => {
+const Layout: React.FC<LayoutProps> = ({ children, title }) => {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -145,14 +147,20 @@ const Layout: React.FC<LayoutProps> = ({
       >
         <div className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            {theme.direction === 'ltr' ? (
+              <ChevronLeftIcon />
+            ) : (
+              <ChevronRightIcon />
+            )}
           </IconButton>
         </div>
         <Divider />
         <List>
-          <ListItemLink href='/'>
-            <ListItemIcon><HomeIcon /> </ListItemIcon>
-            <ListItemText primary='Home' />
+          <ListItemLink href="/">
+            <ListItemIcon>
+              <HomeIcon />{' '}
+            </ListItemIcon>
+            <ListItemText primary="Home" />
           </ListItemLink>
         </List>
       </Drawer>
@@ -166,5 +174,5 @@ const Layout: React.FC<LayoutProps> = ({
       </main>
     </div>
   );
-}
+};
 export default Layout;
