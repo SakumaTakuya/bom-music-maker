@@ -94,9 +94,9 @@ Array.prototype.current = function <U>(position: Position) {
 };
 
 export interface Player {
-  melody: Melody;
-  load(): Promise<void>;
+  load(melody: Melody): Promise<void>;
   play(): Promise<void>;
+  stop(): void;
 }
 
-export type Synth = 'synth' | 'am';
+export type Synth = 'synth' | 'am' | 'piano';

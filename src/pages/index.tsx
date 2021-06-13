@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { Slider } from '@material-ui/core';
+import { useEffect, useRef, useState } from 'react';
 import Layout from '../components/Layout';
 import { usePositionalValues } from '../hooks/usePositionalValue';
 import { Heat, heatsToBeatsBoard } from '../logics/apps/beat';
@@ -10,6 +11,7 @@ import { Melody, Part, Sound } from '../logics/core/melody';
 import { AccompanimentSectionCreator } from '../logics/core/section';
 
 const IndexPage = () => {
+  const player = useRef(new TonePlayer());
   const [bpm, setBpm] = useState(120);
   const [pulses, setPulses] = useState(4);
   const [measured, setMeasured] = useState(4);
@@ -39,7 +41,7 @@ const IndexPage = () => {
       bpm,
       [pulses, measured],
       timeSecond,
-      new Sound(4, 7),
+      new Sound(4, 0),
       feelings
     );
 
@@ -52,7 +54,7 @@ const IndexPage = () => {
     );
 
     const part: Part = {
-      synth: 'synth',
+      synth: 'piano',
       bars: section,
       position: 0,
     };
@@ -62,9 +64,10 @@ const IndexPage = () => {
       structure: structure,
     };
 
-    const player = new TonePlayer(melody);
-    await player.load();
-    await player.play();
+    player.current.stop();
+
+    await player.current.load(melody);
+    await player.current.play();
   }
 
   return (
@@ -178,7 +181,15 @@ const IndexPage = () => {
         </ul>
 
         <hr></hr>
-        <button onClick={createMusic}>create</button>
+        <button onClick={createMusic}>play</button>
+        <button onClick={player.current.stop}>stop</button>
+        <p>
+          <Slider
+            valueLabelDisplay="auto"
+            aria-label="pretto slider"
+            defaultValue={[20, 1, 4]}
+          />
+        </p>
       </Layout>
     </>
   );
