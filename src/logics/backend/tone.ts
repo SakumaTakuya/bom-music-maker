@@ -2,6 +2,7 @@ import * as Tone from 'tone';
 import { Degree, Melody, Player, Sound, Synth } from '../core/melody';
 
 type ToneSound = string | string[];
+type ToneInstrument = Tone.Sampler | Tone.PolySynth;
 
 interface ToneMelody {
   time: string;
@@ -10,13 +11,27 @@ interface ToneMelody {
 }
 
 interface TonePart {
-  synth: Tone.PolySynth;
+  synth: Promise<ToneInstrument>;
   melody: ToneMelody[];
 }
 
-const synthMap: { [index in Synth]: () => Tone.PolySynth } = {
-  synth: () => new Tone.PolySynth(),
-  am: () => new Tone.PolySynth(Tone.AMSynth),
+const synthMap: { [index in Synth]: () => Promise<ToneInstrument> } = {
+  synth: () => Promise.resolve(new Tone.PolySynth()),
+  am: () => Promise.resolve(new Tone.PolySynth(Tone.AMSynth)),
+  piano: () =>
+    new Promise((resolve, reject) => {
+      const sampler = new Tone.Sampler({
+        urls: {
+          C4: 'maou_se_inst_piano2_1do.mp3',
+          C5: 'maou_se_inst_piano2_2do.mp3',
+        },
+        baseUrl: '/static/audio/',
+        release: 1,
+        onload: () => resolve(sampler),
+        onerror: () => reject(),
+        volume: -20,
+      });
+    }),
 };
 
 const degreeMap: { [index in Degree]: string } = {
@@ -40,15 +55,18 @@ function soundToToneNote(sound: Sound): string {
 
 export class TonePlayer implements Player {
   melodyLines?: TonePart[];
-  synths: Tone.PolySynth[] = [];
-  constructor(public melody: Melody) {}
+  datas: [ToneInstrument, Tone.Part][] = [];
 
-  async load(): Promise<void> {
+  stop(): void {
+    Tone.Transport.stop();
+  }
+
+  async load(melody: Melody): Promise<void> {
     this.melodyLines = [];
-    Tone.Transport.bpm.value = this.melody.structure.bpm;
-    Tone.Transport.timeSignature = this.melody.structure.timeSigneture;
+    Tone.Transport.bpm.value = melody.structure.bpm;
+    Tone.Transport.timeSignature = melody.structure.timeSigneture;
 
-    for (const part of this.melody.parts) {
+    for (const part of melody.parts) {
       const synth = synthMap[part.synth]();
       const melody: ToneMelody[] = [];
 
@@ -87,22 +105,23 @@ export class TonePlayer implements Player {
     this.clean();
 
     for (const melodyLine of this.melodyLines) {
-      const synth = melodyLine.synth.toDestination();
+      const synth = (await melodyLine.synth).toDestination();
 
-      new Tone.Part((time, value) => {
+      const part = new Tone.Part((_, value) => {
         synth.triggerAttackRelease(value.note, value.duration);
       }, melodyLine.melody).start();
 
-      this.synths.push(synth);
+      this.datas.push([synth, part]);
     }
 
     Tone.Transport.start();
   }
 
   clean(): void {
-    for (const synth of this.synths) {
-      synth.dispose();
+    for (const data of this.datas) {
+      data[0].dispose();
+      data[1].stop().dispose();
     }
-    this.synths = [];
+    this.datas = [];
   }
 }
