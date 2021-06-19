@@ -25,6 +25,7 @@ const useStyles = makeStyles<Theme, CssProps>((theme) =>
       background: theme.palette.grey[100],
       borderRadius: 5,
       overflow: 'hidden',
+      transitionDuration: '200ms',
       boxShadow:
         '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)',
     },
@@ -47,7 +48,8 @@ const useStyles = makeStyles<Theme, CssProps>((theme) =>
 );
 
 export const MusicRange: React.FC<FcProp> = (prop) => {
-  const styles = useStyles({
+  const grid = 50;
+  const classes = useStyles({
     lineWidthFact: 100,
   });
   const [start, setStart] = useState(0);
@@ -55,8 +57,8 @@ export const MusicRange: React.FC<FcProp> = (prop) => {
 
   useEffect(() => {
     prop.onChange?.call(this, {
-      start,
-      length,
+      start: start / grid,
+      length: length / grid,
     });
   }, [start, length]);
 
@@ -64,12 +66,12 @@ export const MusicRange: React.FC<FcProp> = (prop) => {
     <Grid direction="row" container alignItems="center" spacing={1}>
       <Grid item>{prop.avatar}</Grid>
       <Grid item>
-        <div className={styles.rndControl}>
+        <div className={classes.rndControl}>
           <Rnd
-            className={styles.musicalForm}
+            className={classes.musicalForm}
             resizeHandleComponent={{
               right: (
-                <div className={styles.rndHandle}>
+                <div className={classes.rndHandle}>
                   <KeyboardArrowLeftIcon />
                 </div>
               ),
@@ -77,7 +79,7 @@ export const MusicRange: React.FC<FcProp> = (prop) => {
             default={{
               x: 0,
               y: 0,
-              width: 300,
+              width: grid * 3,
               height: '100%',
             }}
             dragAxis="x"
@@ -85,16 +87,16 @@ export const MusicRange: React.FC<FcProp> = (prop) => {
               top: false,
               right: true,
               bottom: false,
-              left: false,
+              left: true,
               topRight: false,
               bottomRight: false,
               bottomLeft: false,
               topLeft: false,
             }}
-            resizeGrid={[50, 0]}
-            dragGrid={[50, 0]}
+            resizeGrid={[grid, 0]}
+            dragGrid={[grid, 0]}
             bounds="parent"
-            minWidth={50}
+            minWidth={grid}
             onDragStop={(_, data) => {
               setStart(data.lastX);
             }}
