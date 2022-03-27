@@ -1,0 +1,42 @@
+// リセットCSS（すでに指定済なら不要）
+* {
+  box-sizing: border-box;
+}
+
+// 🚩：重要なポイント
+input[type='range'][orient='vertical'] {
+  writing-mode: bt-lr; /* IE */
+  -webkit-appearance: slider-vertical; /* WebKit */
+
+  appearance: none;
+  cursor: pointer; // カーソルを分かりやすく
+  outline: none; // スライダーのアウトラインは目障りになるので消す
+  background: #8acdff; // バーの背景色
+  height: 240px; // バーの高さ
+  // -webkit-向けのつまみ
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none; // 🚩デフォルトのつまみのスタイルを解除
+    background: #ffffff; // 背景色
+    width: 24px; // 幅
+    height: 24px; // 高さ
+    border-radius: 50%; // 円形に
+    box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15); // 影
+  }
+  // -moz-向けのつまみ
+  &::-moz-range-thumb {
+    background: #ffffff; // 背景色
+    width: 24px; // 幅
+    height: 4px; // 高さ
+    border-radius: 10%; // 円形に
+    box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15); // 影
+    border: none; // デフォルトの線を消す
+  }
+  // Firefoxで点線が周りに表示されてしまう問題の解消
+  &::-moz-focus-outer {
+    border: 0;
+  }
+  // つまみをドラッグしているときのスタイル
+  &:active::-webkit-slider-thumb {
+    box-shadow: 0px 5px 10px -2px rgba(0, 0, 0, 0.3);
+  }
+}

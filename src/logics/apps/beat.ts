@@ -12,7 +12,7 @@ export function heatsToBeatsBoard(
   for (const heat of heats) {
     result.push({
       position: heat.position,
-      value: Array.from({ length: 10 }, () => heatToBeat(heat.value)),
+      value: Array.from({ length: 20 }, () => heatToBeat(heat.value)),
     });
   }
   return result;

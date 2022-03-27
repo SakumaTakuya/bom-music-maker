@@ -16,7 +16,7 @@ type FcProp = {
 };
 
 type CssProps = {
-  lineWidthFact: number;
+  lineWidth: number;
 };
 
 const useStyles = makeStyles<Theme, CssProps>((theme) =>
@@ -29,9 +29,18 @@ const useStyles = makeStyles<Theme, CssProps>((theme) =>
       boxShadow:
         '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)',
     },
+    rndFrame: {
+      background: theme.palette.grey[300],
+      width: '60vw',
+      overflow: 'scroll',
+      scrollbarWidth: 'none',
+      '&::-webkit-scrollbar': {
+        display: 'none',
+      },
+    },
     rndControl: {
       position: 'relative',
-      width: (props) => theme.spacing(props.lineWidthFact),
+      width: (props) => props.lineWidth,
       height: theme.spacing(10),
     },
     rndHandle: {
@@ -50,7 +59,7 @@ const useStyles = makeStyles<Theme, CssProps>((theme) =>
 export const MusicRange: React.FC<FcProp> = (prop) => {
   const grid = 50;
   const classes = useStyles({
-    lineWidthFact: 100,
+    lineWidth: grid * 40,
   });
   const [start, setStart] = useState(0);
   const [length, setLength] = useState(300);
@@ -87,7 +96,7 @@ export const MusicRange: React.FC<FcProp> = (prop) => {
               top: false,
               right: true,
               bottom: false,
-              left: true,
+              left: false,
               topRight: false,
               bottomRight: false,
               bottomLeft: false,

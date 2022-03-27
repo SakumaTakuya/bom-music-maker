@@ -1,4 +1,3 @@
-import { Slider } from '@material-ui/core';
 import { useEffect, useRef, useState } from 'react';
 import Layout from '../components/Layout';
 import { usePositionalValues } from '../hooks/usePositionalValue';
@@ -9,6 +8,13 @@ import { createSection } from '../logics/apps/part';
 import { TonePlayer } from '../logics/backend/tone';
 import { Melody, Part, Sound } from '../logics/core/melody';
 import { AccompanimentSectionCreator } from '../logics/core/section';
+import { MusicRange } from '../components/MusicRange';
+import Avatar from '@material-ui/core/Avatar';
+import Divider from '@material-ui/core/Divider';
+import { HeatSlider } from '../components/HeatSlider';
+import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
+import { Grid } from '@material-ui/core';
+import { InformationStep } from '../components/steps/information';
 
 const IndexPage = () => {
   const player = useRef(new TonePlayer());
@@ -183,13 +189,56 @@ const IndexPage = () => {
         <hr></hr>
         <button onClick={createMusic}>play</button>
         <button onClick={player.current.stop}>stop</button>
-        <p>
-          <Slider
-            valueLabelDisplay="auto"
-            aria-label="pretto slider"
-            defaultValue={[20, 1, 4]}
-          />
-        </p>
+        <div>
+          <MusicRange avatar={<Avatar>H</Avatar>}>
+            <div
+              style={{
+                width: 1000,
+                height: 100,
+                background: 'white',
+              }}
+            ></div>
+          </MusicRange>
+          <Divider />
+          <MusicRange
+            avatar={<Avatar>H</Avatar>}
+            onChange={(value) => {
+              editHeats(1, {
+                ...heats[1],
+                position: value.start * 4,
+              });
+            }}
+          >
+            <Grid
+              container
+              direction="row"
+              alignContent="center"
+              alignItems="center"
+            >
+              <HeatSlider
+                onChange={(value) => {
+                  editHeats(1, {
+                    ...heats[1],
+                    value: value,
+                  });
+                }}
+              />
+            </Grid>
+          </MusicRange>
+          <Divider />
+          <MusicRange avatar={<Avatar>H</Avatar>}>test</MusicRange>
+        </div>
+        <InformationStep
+          onChangeBpm={(bpm) => {
+            console.log('bpm:', bpm);
+          }}
+          onChangeTimeSignature={(timeSig) => {
+            console.log('time signature:', timeSig);
+          }}
+          onChangeTimeSeconds={(seconds) => {
+            console.log('time seconds:', seconds);
+          }}
+        />
       </Layout>
     </>
   );
